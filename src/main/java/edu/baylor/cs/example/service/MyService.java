@@ -31,7 +31,12 @@ public class MyService {
     @Autowired
     CourseRepository courseRepository;
 
+    public static boolean populated = false;
+
     public void populate() {
+        if (populated) return;
+        else populated = true;
+
         Student student1 = new Student();
         student1.setName("student-1");
         student1.setAge(21);

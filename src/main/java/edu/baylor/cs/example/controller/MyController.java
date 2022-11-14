@@ -1,5 +1,6 @@
 package edu.baylor.cs.example.controller;
 
+import edu.baylor.cs.example.DeadlockExample;
 import edu.baylor.cs.example.model.Contact;
 import edu.baylor.cs.example.model.Course;
 import edu.baylor.cs.example.model.Student;
@@ -27,7 +28,11 @@ public class MyController {
     // ========== Student ==========
 
     @GetMapping(("/students"))
-    public ResponseEntity<List<Student>> getStudents(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<Student>> getStudents(@RequestParam(required = false) String name) throws InterruptedException {
+        Thread.sleep(3000); // for visual vm analysis
+
+        service.populate();
+
         List<Student> students = service.getStudents(name);
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
@@ -78,5 +83,18 @@ public class MyController {
     public ResponseEntity<List<Course>> getCourses() {
         List<Course> courses = service.getCourses();
         return new ResponseEntity<>(courses, HttpStatus.OK);
+    }
+
+    // ========== Deadlock example ==========
+    @GetMapping(("/deadlock"))
+    public void runDeadlockExample() {
+        DeadlockExample.run();
+    }
+
+    @GetMapping(("/slowTask"))
+    public void runSlowTask() {
+        long sleepTime = 5 * 1000 * 1000000L; // 5 seconds
+        long startTime = System.nanoTime();
+        while ((System.nanoTime() - startTime) < sleepTime) {}
     }
 }

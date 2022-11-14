@@ -36,6 +36,7 @@ public class ExampleTest {
     @BeforeEach
     public void initService() {
         service = new MyService(studentRepository, contactRepository, universityRepository, courseRepository);
+        MyService.populated = false;
         service.populate();
     }
 
